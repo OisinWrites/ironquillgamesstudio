@@ -1,1 +1,1 @@
-web: gunicorn ironquillgamesstudio.wsgi
+web: gunicorn website.wsgi
