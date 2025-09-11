@@ -33,7 +33,7 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = not DEBUG
 
 cloudinary.config( 
   cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'), 

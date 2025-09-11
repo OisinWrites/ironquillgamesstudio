@@ -1,0 +1,120 @@
+/* style.css */
+@font-face {
+    font-family: 'Leadword';
+    src: url('../fonts/LeadwordRegular-8ORW0.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mailman';
+    src: url('../fonts/MailmanRegular-1j8VM.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Qucluck';
+    src: url('../fonts/Qucluck-YzRKO.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Lora', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #857e7e;
+    color: #ECE2D0;
+}
+
+h1, h2, h3 {
+    color: #ECE2D0;
+}
+
+h1 {
+    font-family: 'Mailman', sans-serif;
+    font-size: 4rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: #ECE2D0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 12px;
+  border: 5px solid #ECE2D0;
+  display: block;
+  margin: 0 auto;
+}
+
+.hero-image:hover {
+  opacity: 0.9;
+  transform: scale(1.01);
+  transition: all 0.3s ease;
+}
+
+.site-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #111;
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000;
+}
+
+.site-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #111;
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000;
+}
+
+.site-footer .social-icons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;        /* Allow wrapping on small screens */
+  gap: 100px;              /* Wide gap by default */
+}
+
+.site-footer .social-icons li a {
+  color: #fff;
+  font-size: 2.5rem;
+  transition: color 0.3s ease;
+}
+
+.site-footer .social-icons li a:hover {
+  color: #ccc;
+}
+
+/* Optional: Adjust spacing on smaller screens */
+@media (max-width: 600px) {
+  .site-footer .social-icons {
+    gap: 40px;            /* Narrower gap on smaller screens */
+  }
+}
