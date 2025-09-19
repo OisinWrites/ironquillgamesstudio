@@ -247,7 +247,7 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  padding-left: 5rem;
+  padding-inline: 5rem;
   gap: 1rem;
   position: fixed;
   bottom: 0;
@@ -266,7 +266,7 @@ a:hover {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 2.5rem;
+  gap: 3.5rem;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -360,4 +360,56 @@ display: block;
 .wishlist-mobile p {
 font-size: 0.9rem;
 }
+}
+
+@media (max-width: 500px) {
+    h1 {
+        font-size: 3rem;
+    }
+
+    .stepped-text p {
+        font-size: .8rem;
+        line-height: .6rem;
+    }
+    .fade-bg {
+        height: 18rem;
+    }
+    .image-mask {
+        mask-image: linear-gradient(to top, black, transparent);
+        -webkit-mask-image: linear-gradient(to top, black, transparent);
+    }
+    .header-row {
+        justify-content: center !important;
+    }
+    .social-icons {
+        gap: 0 !important;
+    }
+    .social-icons li a i {
+        font-size: 1.2rem !important;
+        margin-inline: .9rem;
+    }
+    .footer-credit {
+        font-size: .8rem;
+        white-space: nowrap;
+        margin: 0 !important;
+    }
+    .site-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0rem;
+        padding-inline: 0rem;
+        gap: 0rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #111;
+        text-align: center;
+        z-index: 1000;
+    }
+    .tile {
+        left: 0rem;
+    }
 }
