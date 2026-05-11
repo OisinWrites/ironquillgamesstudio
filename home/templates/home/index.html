@@ -1,12 +1,19 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <title>Iron Quill Games Studio</title>
     <meta name="description" content="Iron Quill Games Studio is an independent Irish game studio currently developing Knucklebones and preparing for Steam Next Fest.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17100d">
+    <meta property="og:title" content="Iron Quill Games Studio">
+    <meta property="og:description" content="Independent Irish game studio. Currently developing Knucklebones and preparing for Steam Next Fest.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://res.cloudinary.com/dwhennrjl/image/upload/v1778273902/iqgs/website-2026/Artwork/KeyArt/StoreMainCapsuleTextured.png">
+    <meta property="og:image:alt" content="Knucklebones key art">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="icon" type="image/png" media="(prefers-color-scheme: light)" href="{% static 'home/img/favicon-light.png' %}">
     <link rel="icon" type="image/png" media="(prefers-color-scheme: dark)" href="{% static 'home/img/favicon-dark.png' %}">
     <link rel="icon" type="image/png" href="{% static 'home/img/favicon-light.png' %}">
@@ -27,7 +34,6 @@
         >
         <span class="studio-name-wrap">
           <span class="studio-name">Iron Quill Games Studio</span>
-          <span class="studio-separator" aria-hidden="true"></span>
           <span class="studio-tagline">Independent Irish game studio</span>
         </span>
       </a>
@@ -147,7 +153,7 @@
     <footer class="site-footer">
       <div class="footer-brand">
         <img
-          src="https://res.cloudinary.com/dwhennrjl/image/upload/v1778273903/iqgs/website-2026/Branding/IronQuill/IronQuillStudioMark.png"
+          src="{% static 'home/img/favicon-light.png' %}"
           alt=""
           class="footer-mark"
         >
