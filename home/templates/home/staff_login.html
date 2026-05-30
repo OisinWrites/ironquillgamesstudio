@@ -1,0 +1,24 @@
+{% extends "home/staff_base.html" %}
+
+{% block title %}Studio Access{% endblock %}
+
+{% block content %}
+  <section class="staff-panel staff-login-panel">
+    <p class="hero-intro">Private studio workspace</p>
+    <h1>Studio Access</h1>
+    <p class="staff-panel-copy">Sign in with your staff account to continue.</p>
+    <form method="post" class="staff-form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <label for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username }}
+      <label for="{{ form.password.id_for_label }}">Password</label>
+      {{ form.password }}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" class="cta-primary">Sign in</button>
+    </form>
+    <a href="{% url 'home' %}" class="staff-return">Return to website</a>
+  </section>
+{% endblock %}

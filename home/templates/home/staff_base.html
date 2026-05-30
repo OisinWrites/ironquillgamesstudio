@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Studio Access{% endblock %} | Iron Quill Games Studio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17100d">
+    <link rel="icon" type="image/png" href="{% static 'home/img/favicon-light.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="studio-lockup" href="{% url 'home' %}" aria-label="Return to Iron Quill Games Studio">
+        <img src="{% static 'home/img/favicon-light.png' %}" alt="" class="studio-mark">
+        <span class="studio-name-wrap">
+          <span class="studio-name">Iron Quill Games Studio</span>
+          <span class="studio-tagline">Independent Irish game studio</span>
+        </span>
+      </a>
+    </header>
+    <main class="staff-main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "home/staff_base.html" %}
+
+{% block title %}Feedback Triage{% endblock %}
+
+{% block content %}
+  <section class="staff-panel staff-dashboard">
+    <div class="staff-panel-heading">
+      <div>
+        <p class="hero-intro">Private studio workspace</p>
+        <h1>Feedback Triage</h1>
+      </div>
+      <form method="post" action="{% url 'staff-logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="staff-return">Sign out</button>
+      </form>
+    </div>
+    <p class="staff-panel-copy">
+      The report receiver and triage dashboard will be built here. Access is restricted to staff accounts.
+    </p>
+  </section>
+{% endblock %}
