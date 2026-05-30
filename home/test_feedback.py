@@ -67,6 +67,28 @@ class FeedbackReceiverTests(TestCase):
         self.assertEqual(report.normalized_message, "the movement choice was unclear :scream:")
         self.assertIsNone(report.save_snapshot)
 
+    def test_legacy_utc_timestamp_without_z_is_accepted(self):
+        payload = valid_payload()
+        payload["manifest"]["created_at_utc"] = "2026-05-30T12:34:56"
+        payload["manifest"]["feedback_consent_timestamp_utc"] = "2026-05-30T12:30:00"
+
+        response = self.post_payload(payload)
+
+        self.assertEqual(response.status_code, 201)
+        report = FeedbackReport.objects.get()
+        self.assertEqual(report.created_at_utc.utcoffset().total_seconds(), 0)
+
+    def test_legacy_no_save_filename_is_accepted(self):
+        payload = valid_payload()
+        payload["manifest"]["save_snapshot_filename"] = "save_snapshot.json"
+
+        response = self.post_payload(payload)
+
+        self.assertEqual(response.status_code, 201)
+        report = FeedbackReport.objects.get()
+        self.assertFalse(report.has_save_snapshot)
+        self.assertIsNone(report.save_snapshot)
+
     def test_duplicate_feedback_id_returns_existing_receipt(self):
         first_response = self.post_payload(valid_payload())
         second_response = self.post_payload(valid_payload())

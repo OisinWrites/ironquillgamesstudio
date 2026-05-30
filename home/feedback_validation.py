@@ -86,7 +86,12 @@ def parse_feedback_payload(raw_body):
         raise FeedbackValidationError("unsupported_feedback_schema")
     if not FEEDBACK_ID_PATTERN.fullmatch(fields["feedback_id"]):
         raise FeedbackValidationError("invalid_feedback_id")
-    _require_string(manifest, "save_snapshot_filename", maximum=128, allow_empty=True)
+    save_snapshot_filename = _require_string(
+        manifest,
+        "save_snapshot_filename",
+        maximum=128,
+        allow_empty=True,
+    )
 
     message = payload["message"]
     if not isinstance(message, str) or not message.strip():
@@ -99,6 +104,8 @@ def parse_feedback_payload(raw_body):
         _validate_save_snapshot(save_snapshot, fields["save_schema_version"])
     elif save_snapshot is not None or fields["save_schema_version"] != 0:
         raise FeedbackValidationError("unexpected_save_snapshot")
+    elif save_snapshot_filename not in {"", "save_snapshot.json"}:
+        raise FeedbackValidationError("unexpected_save_snapshot_filename")
 
     fields.update(
         message=message,
@@ -171,6 +178,10 @@ def _require_bool(source, key):
 
 def _require_utc_datetime(source, key):
     value = _require_string(source, key, maximum=40)
+    if value.endswith("Z"):
+        value = f"{value[:-1]}+00:00"
+    elif re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", value):
+        value = f"{value}+00:00"
     parsed = parse_datetime(value)
     if parsed is None or parsed.tzinfo is None or parsed.utcoffset().total_seconds() != 0:
         raise FeedbackValidationError(f"invalid_{key}")
