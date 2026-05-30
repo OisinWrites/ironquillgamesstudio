@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from .models import FeedbackIngestRejection, FeedbackReport
+from .models import FeedbackIngestRejection, FeedbackReport, Issue, Tag
 
 
 def valid_payload(feedback_id="feedback-001", with_save=False):
@@ -222,3 +222,137 @@ class FeedbackSaveDownloadTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+
+
+@override_settings(
+    STORAGES={
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+)
+class FeedbackTriageUiTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.staff_user = user_model.objects.create_user(
+            username="staff-ui",
+            password="correct-horse-battery-staple",
+            is_staff=True,
+        )
+        self.regular_user = user_model.objects.create_user(
+            username="regular-ui",
+            password="correct-horse-battery-staple",
+        )
+        self.report = self.create_report(
+            feedback_id="feedback-ui-001",
+            message="<script>alert('x')</script> Movement unclear",
+            platform="Windows",
+            with_save=True,
+        )
+        self.create_report(
+            feedback_id="feedback-ui-002",
+            message="Audio volume was too loud",
+            platform="Linux",
+        )
+
+    def create_report(self, feedback_id, message, platform, with_save=False):
+        payload = valid_payload(feedback_id=feedback_id, with_save=with_save)
+        payload["message"] = message
+        payload["manifest"]["platform"] = platform
+        response = self.client.post(
+            reverse("game-feedback-v1"),
+            data=json.dumps(payload),
+            content_type="application/json",
+        )
+        self.assertIn(response.status_code, {200, 201})
+        return FeedbackReport.objects.get(feedback_id=feedback_id)
+
+    def test_anonymous_user_cannot_open_triage_inbox(self):
+        response = self.client.get(reverse("feedback-triage"))
+
+        self.assertRedirects(
+            response,
+            f'{reverse("staff-login")}?next={reverse("feedback-triage")}',
+        )
+
+    def test_staff_can_filter_report_inbox(self):
+        self.client.force_login(self.staff_user)
+
+        response = self.client.get(
+            reverse("feedback-triage"),
+            {"q": "movement", "platform": "Windows", "save": "1"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "feedback-ui-001")
+        self.assertNotContains(response, "feedback-ui-002")
+        self.assertContains(response, "&lt;script&gt;alert(&#x27;x&#x27;)&lt;/script&gt;", html=False)
+
+    def test_regular_user_cannot_open_report_detail(self):
+        self.client.force_login(self.regular_user)
+
+        response = self.client.get(
+            reverse("feedback-report-detail", kwargs={"receipt_id": self.report.receipt_id}),
+        )
+
+        self.assertRedirects(
+            response,
+            (
+                f'{reverse("staff-login")}?next='
+                f'{reverse("feedback-report-detail", kwargs={"receipt_id": self.report.receipt_id})}'
+            ),
+        )
+
+    def test_staff_can_toggle_star_from_inbox(self):
+        self.client.force_login(self.staff_user)
+
+        response = self.client.post(
+            reverse("feedback-report-toggle-star", kwargs={"receipt_id": self.report.receipt_id}),
+            {"next": reverse("feedback-triage")},
+        )
+
+        self.assertRedirects(response, reverse("feedback-triage"))
+        self.report.refresh_from_db()
+        self.assertTrue(self.report.is_starred)
+
+    def test_staff_can_update_report_link_issue_and_tags(self):
+        self.client.force_login(self.staff_user)
+
+        response = self.client.post(
+            reverse("feedback-report-detail", kwargs={"receipt_id": self.report.receipt_id}),
+            {
+                "is_starred": "on",
+                "review_status": FeedbackReport.ReviewStatus.REVIEWED,
+                "new_issue_title": "Movement destination choice is unclear",
+                "tags": "movement, onboarding, movement",
+                "admin_notes": "Clear repro from first report.",
+            },
+        )
+
+        self.assertRedirects(
+            response,
+            reverse("feedback-report-detail", kwargs={"receipt_id": self.report.receipt_id}),
+        )
+        self.report.refresh_from_db()
+        self.assertTrue(self.report.is_starred)
+        self.assertEqual(self.report.review_status, FeedbackReport.ReviewStatus.REVIEWED)
+        self.assertEqual(self.report.matched_issue.title, "Movement destination choice is unclear")
+        self.assertEqual(self.report.admin_notes, "Clear repro from first report.")
+        self.assertEqual(set(self.report.tags.values_list("slug", flat=True)), {"movement", "onboarding"})
+        self.assertEqual(Issue.objects.count(), 1)
+        self.assertEqual(Tag.objects.count(), 2)
+
+    def test_report_detail_includes_save_download_link(self):
+        self.client.force_login(self.staff_user)
+
+        response = self.client.get(
+            reverse("feedback-report-detail", kwargs={"receipt_id": self.report.receipt_id}),
+        )
+
+        self.assertContains(
+            response,
+            reverse("feedback-save-download", kwargs={"receipt_id": self.report.receipt_id}),
+        )

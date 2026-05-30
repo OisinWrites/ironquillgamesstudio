@@ -421,6 +421,10 @@ main {
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
 }
 
+.staff-panel-wide {
+  width: min(100%, 72rem);
+}
+
 .staff-panel h1 {
   margin: 0;
   font-family: "Cormorant Garamond", serif;
@@ -462,6 +466,37 @@ main {
   color: var(--text);
   background: rgba(0, 0, 0, 0.18);
   font: inherit;
+}
+
+.staff-form select,
+.staff-form textarea,
+.staff-filter-form input,
+.staff-filter-form select {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.18);
+  font: inherit;
+}
+
+.staff-form textarea {
+  resize: vertical;
+}
+
+.staff-form label:has(input[type="checkbox"]),
+.staff-filter-form label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.staff-form label input[type="checkbox"],
+.staff-filter-form input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
 }
 
 .staff-form input:focus {
@@ -512,10 +547,180 @@ main {
   padding-left: 1.1rem;
 }
 
+.staff-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.staff-stat-grid div,
+.staff-table-panel,
+.report-message-card,
+.report-meta-card {
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.staff-stat-grid div {
+  padding: 0.9rem;
+}
+
+.staff-stat-grid strong {
+  display: block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.staff-stat-grid span,
+.staff-field-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.staff-filter-form {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.4fr) minmax(8rem, 0.8fr) repeat(2, minmax(7rem, 0.7fr)) auto auto auto auto;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.staff-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.32fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.staff-table-panel {
+  padding: 1rem;
+}
+
+.staff-table-panel h2 {
+  margin: 0 0 0.85rem;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.8rem;
+}
+
+.staff-table-wrap {
+  overflow-x: auto;
+}
+
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.staff-table th,
+.staff-table td {
+  padding: 0.75rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.staff-table th {
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.staff-table a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: rgba(208, 161, 100, 0.45);
+}
+
+.staff-row-note {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.staff-star-button {
+  border: 0;
+  color: var(--accent);
+  background: transparent;
+  font: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.issue-list {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.issue-list li {
+  display: grid;
+  gap: 0.2rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.issue-list span {
+  color: var(--muted);
+}
+
+.report-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.34fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.report-message-card,
+.report-meta-card {
+  padding: 1rem;
+}
+
+.report-message-full {
+  margin-top: 0.5rem;
+  color: var(--text);
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.report-meta-card p {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+}
+
+.report-meta-card strong {
+  color: var(--text);
+}
+
+.staff-inline-action {
+  margin-top: 0.5rem;
+}
+
+.triage-form {
+  margin-top: 1rem;
+}
+
 @media (max-width: 980px) {
   .hero,
-  .visual-grid {
+  .visual-grid,
+  .staff-dashboard-grid,
+  .report-detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .staff-filter-form,
+  .staff-stat-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .hero {
@@ -569,5 +774,10 @@ main {
   .cta-primary,
   .cta-secondary {
     width: 100%;
+  }
+
+  .staff-filter-form,
+  .staff-stat-grid {
+    grid-template-columns: 1fr;
   }
 }

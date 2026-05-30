@@ -1,0 +1,70 @@
+{% extends "home/staff_base.html" %}
+
+{% block title %}Feedback Report{% endblock %}
+
+{% block content %}
+  <section class="staff-panel staff-panel-wide staff-dashboard">
+    <div class="staff-panel-heading">
+      <div>
+        <p class="hero-intro">Report detail</p>
+        <h1>Feedback Report</h1>
+        <p class="staff-panel-copy">{{ report.feedback_id }}</p>
+      </div>
+      <a href="{% url 'feedback-triage' %}" class="staff-return">Back to triage</a>
+    </div>
+
+    <div class="report-detail-grid">
+      <article class="report-message-card">
+        <p class="staff-field-label">Player message</p>
+        <div class="report-message-full">{{ report.message|linebreaksbr }}</div>
+      </article>
+
+      <aside class="report-meta-card">
+        <p><strong>Received:</strong> {{ report.received_at }}</p>
+        <p><strong>Created:</strong> {{ report.created_at_utc }}</p>
+        <p><strong>Version:</strong> {{ report.game_version }}</p>
+        <p><strong>Channel:</strong> {{ report.build_channel }}</p>
+        <p><strong>Platform:</strong> {{ report.platform }}</p>
+        <p><strong>Locale:</strong> {{ report.locale }}</p>
+        <p><strong>Save:</strong> {% if report.has_save_snapshot %}attached{% else %}none{% endif %}</p>
+        {% if report.has_save_snapshot %}
+          <a href="{% url 'feedback-save-download' report.receipt_id %}" class="cta-secondary staff-inline-action">Download save JSON</a>
+        {% endif %}
+      </aside>
+    </div>
+
+    <form method="post" class="staff-form triage-form">
+      {% csrf_token %}
+      <label>
+        <input type="checkbox" name="is_starred" {% if report.is_starred %}checked{% endif %}>
+        Star this report
+      </label>
+
+      <label for="review_status">Review status</label>
+      <select id="review_status" name="review_status">
+        {% for value, label in review_statuses %}
+          <option value="{{ value }}" {% if report.review_status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="matched_issue">Linked issue</label>
+      <select id="matched_issue" name="matched_issue">
+        <option value="">No linked issue</option>
+        {% for issue in issues %}
+          <option value="{{ issue.id }}" {% if report.matched_issue_id == issue.id %}selected{% endif %}>{{ issue.title }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="new_issue_title">Or create new issue</label>
+      <input id="new_issue_title" name="new_issue_title" type="text" placeholder="Movement destination choice is unclear">
+
+      <label for="tags">Tags</label>
+      <input id="tags" name="tags" type="text" value="{{ tag_value }}" placeholder="movement, onboarding">
+
+      <label for="admin_notes">Admin notes</label>
+      <textarea id="admin_notes" name="admin_notes" rows="5">{{ report.admin_notes }}</textarea>
+
+      <button type="submit" class="cta-primary">Save triage notes</button>
+    </form>
+  </section>
+{% endblock %}

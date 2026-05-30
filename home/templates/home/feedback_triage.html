@@ -14,8 +14,93 @@
         <button type="submit" class="staff-return">Sign out</button>
       </form>
     </div>
-    <p class="staff-panel-copy">
-      The report receiver and triage dashboard will be built here. Access is restricted to staff accounts.
-    </p>
+    <div class="staff-stat-grid">
+      <div><strong>{{ stats.total_reports }}</strong><span>Total</span></div>
+      <div><strong>{{ stats.untriaged_reports }}</strong><span>Untriaged</span></div>
+      <div><strong>{{ stats.starred_reports }}</strong><span>Starred</span></div>
+      <div><strong>{{ stats.save_reports }}</strong><span>With saves</span></div>
+      <div><strong>{{ stats.rejections }}</strong><span>Rejected</span></div>
+    </div>
+
+    <form method="get" class="staff-filter-form">
+      <input type="search" name="q" value="{{ filters.q }}" placeholder="Search message or feedback ID">
+      <select name="status">
+        <option value="">Any status</option>
+        {% for value, label in review_statuses %}
+          <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <input type="text" name="version" value="{{ filters.version }}" placeholder="Version">
+      <input type="text" name="platform" value="{{ filters.platform }}" placeholder="Platform">
+      <label><input type="checkbox" name="starred" value="1" {% if filters.starred == "1" %}checked{% endif %}> Starred</label>
+      <label><input type="checkbox" name="save" value="1" {% if filters.save == "1" %}checked{% endif %}> Has save</label>
+      <button type="submit" class="cta-primary">Filter</button>
+      <a href="{% url 'feedback-triage' %}" class="staff-return">Clear</a>
+    </form>
+
+    <div class="staff-dashboard-grid">
+      <section class="staff-table-panel">
+        <h2>Report Inbox</h2>
+        {% if reports %}
+          <div class="staff-table-wrap">
+            <table class="staff-table">
+              <thead>
+                <tr>
+                  <th>Star</th>
+                  <th>Date</th>
+                  <th>Version</th>
+                  <th>Platform</th>
+                  <th>Message</th>
+                  <th>Save</th>
+                  <th>Status</th>
+                  <th>Issue</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for report in reports %}
+                  <tr>
+                    <td>
+                      <form method="post" action="{% url 'feedback-report-toggle-star' report.receipt_id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button type="submit" class="staff-star-button" aria-label="Toggle star">{% if report.is_starred %}★{% else %}☆{% endif %}</button>
+                      </form>
+                    </td>
+                    <td>{{ report.received_at|date:"d M H:i" }}</td>
+                    <td>{{ report.game_version }}</td>
+                    <td>{{ report.platform }}</td>
+                    <td>
+                      <a href="{% url 'feedback-report-detail' report.receipt_id %}">{{ report.message|truncatechars:90 }}</a>
+                      <span class="staff-row-note">{{ report.feedback_id }}</span>
+                    </td>
+                    <td>{% if report.has_save_snapshot %}yes{% else %}no{% endif %}</td>
+                    <td>{{ report.get_review_status_display }}</td>
+                    <td>{% if report.matched_issue %}{{ report.matched_issue.title }}{% else %}Unlinked{% endif %}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="staff-panel-copy">No reports match the current filters.</p>
+        {% endif %}
+      </section>
+
+      <aside class="staff-table-panel">
+        <h2>Priority Issues</h2>
+        {% if issues %}
+          <ul class="issue-list">
+            {% for issue in issues %}
+              <li>
+                <strong>{{ issue.title }}</strong>
+                <span>{{ issue.report_count }} report{{ issue.report_count|pluralize }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="staff-panel-copy">No issues have been created yet.</p>
+        {% endif %}
+      </aside>
+    </div>
   </section>
 {% endblock %}
