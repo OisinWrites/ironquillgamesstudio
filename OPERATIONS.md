@@ -70,6 +70,30 @@ heroku run python manage.py axes_reset_username <username> --app <app-name>
 
 With `DEBUG=False`, Django redirects HTTP requests to HTTPS, trusts Heroku's `X-Forwarded-Proto` header for protocol detection, uses secure session and CSRF cookies, and sends an HSTS header. Confirm HTTPS redirects after every deployment.
 
+## Game Feedback Receiver
+
+The versioned receiver accepts:
+
+```text
+POST /api/game-feedback/v1/
+Content-Type: application/json
+```
+
+New valid reports return HTTP `201`. A retried `feedback_id` returns the existing receipt with HTTP `200`. Reports are idempotent because `feedback_id` is unique.
+
+The receiver rejects bodies over `700 KiB`, messages over `2000` characters, save snapshots over `512 KiB`, excessive JSON nesting, unsupported schemas, and invalid save shapes. It stores short rejection summaries without retaining malformed payloads.
+
+Validated save snapshots are stored privately in PostgreSQL `JSONField` data. They are never written under `MEDIA_URL`. Staff downloads are generated through an authenticated endpoint.
+
+The application enforces a shared global receiver limit of `120` requests per minute using PostgreSQL rate buckets. Heroku does not provide a trustworthy client-IP header for application security decisions. Add an edge rate limit if a trusted proxy or web application firewall is introduced later.
+
+Retention defaults:
+
+- preserve accepted feedback reports until a reviewed studio retention policy replaces this default;
+- preserve validated save snapshots with their reports until the same review;
+- retain short rejection summaries temporarily and prune them operationally once the dashboard phase adds a cleanup command;
+- retain rate-limit buckets for approximately two days.
+
 ## Database Backup And Restore
 
 Use Heroku PostgreSQL backups before schema changes:
