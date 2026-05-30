@@ -32,9 +32,10 @@ venv\Scripts\python.exe manage.py collectstatic --noinput
 Review the Heroku config vars, deploy through the project's normal Heroku Git workflow, then run:
 
 ```powershell
-heroku run python manage.py migrate --app <app-name>
 heroku run python manage.py check --deploy --app <app-name>
 ```
+
+Heroku runs `python manage.py migrate` automatically during the release phase before promoting a new deployment. Review the release-phase result after every deploy.
 
 Verify the homepage, `/studio-access/`, `/feedback-triage/`, and `/studio-maintenance/` over HTTPS after deployment.
 
