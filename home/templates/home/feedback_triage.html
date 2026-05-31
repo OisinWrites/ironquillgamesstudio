@@ -19,7 +19,15 @@
       <div><strong>{{ stats.untriaged_reports }}</strong><span>Untriaged</span></div>
       <div><strong>{{ stats.starred_reports }}</strong><span>Starred</span></div>
       <div><strong>{{ stats.save_reports }}</strong><span>With saves</span></div>
-      <div><strong>{{ stats.rejections }}</strong><span>Rejected</span></div>
+      <div>
+        <strong>{{ stats.rejections }}</strong><span>Rejected</span>
+        {% if stats.rejections %}
+          <form method="post" action="{% url 'feedback-rejections-clear' %}" class="staff-stat-action">
+            {% csrf_token %}
+            <button type="submit" class="staff-return">Clear rejected</button>
+          </form>
+        {% endif %}
+      </div>
     </div>
 
     <form method="get" class="staff-filter-form">

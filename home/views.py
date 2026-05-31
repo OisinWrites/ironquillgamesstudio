@@ -77,6 +77,13 @@ def feedback_report_toggle_star(request, receipt_id):
     return redirect(next_url)
 
 
+@require_POST
+@user_passes_test(lambda user: user.is_staff, login_url="staff-login")
+def feedback_rejections_clear(request):
+    FeedbackIngestRejection.objects.all().delete()
+    return redirect("feedback-triage")
+
+
 @csrf_exempt
 @require_POST
 def game_feedback_v1(request):

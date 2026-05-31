@@ -27,6 +27,11 @@ urlpatterns = [
         views.feedback_report_toggle_star,
         name='feedback-report-toggle-star',
     ),
+    path(
+        'feedback-triage/rejections/clear/',
+        views.feedback_rejections_clear,
+        name='feedback-rejections-clear',
+    ),
     path('api/game-feedback/v1/', views.game_feedback_v1, name='game-feedback-v1'),
     path(
         'feedback-triage/save/<uuid:receipt_id>/',

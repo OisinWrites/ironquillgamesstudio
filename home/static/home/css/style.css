@@ -425,6 +425,10 @@ main {
   width: min(100%, 72rem);
 }
 
+.staff-dashboard {
+  width: min(100%, 72rem);
+}
+
 .staff-panel h1 {
   margin: 0;
   font-family: "Cormorant Garamond", serif;
@@ -565,6 +569,15 @@ main {
 
 .staff-stat-grid div {
   padding: 0.9rem;
+}
+
+.staff-stat-action {
+  margin-top: 0.5rem;
+}
+
+.staff-stat-action .staff-return {
+  margin-top: 0;
+  font-size: 0.78rem;
 }
 
 .staff-stat-grid strong {

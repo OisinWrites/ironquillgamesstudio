@@ -340,6 +340,16 @@ class FeedbackTriageUiTests(TestCase):
         self.report.refresh_from_db()
         self.assertTrue(self.report.is_starred)
 
+    def test_staff_can_clear_ingest_rejections(self):
+        FeedbackIngestRejection.objects.create(reason_code="unsupported_content_type", request_size=10)
+        FeedbackIngestRejection.objects.create(reason_code="message_too_large", request_size=2001)
+        self.client.force_login(self.staff_user)
+
+        response = self.client.post(reverse("feedback-rejections-clear"))
+
+        self.assertRedirects(response, reverse("feedback-triage"))
+        self.assertEqual(FeedbackIngestRejection.objects.count(), 0)
+
     def test_staff_can_update_report_link_issue_and_tags(self):
         self.client.force_login(self.staff_user)
 
