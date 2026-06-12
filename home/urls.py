@@ -28,6 +28,11 @@ urlpatterns = [
         name='feedback-report-toggle-star',
     ),
     path(
+        'feedback-triage/reports/<uuid:receipt_id>/delete/',
+        views.feedback_report_delete,
+        name='feedback-report-delete',
+    ),
+    path(
         'feedback-triage/rejections/clear/',
         views.feedback_rejections_clear,
         name='feedback-rejections-clear',

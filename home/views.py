@@ -79,6 +79,15 @@ def feedback_report_toggle_star(request, receipt_id):
 
 @require_POST
 @user_passes_test(lambda user: user.is_staff, login_url="staff-login")
+def feedback_report_delete(request, receipt_id):
+    report = get_object_or_404(FeedbackReport, receipt_id=receipt_id)
+    next_url = request.POST.get("next") or "feedback-triage"
+    report.delete()
+    return redirect(next_url)
+
+
+@require_POST
+@user_passes_test(lambda user: user.is_staff, login_url="staff-login")
 def feedback_rejections_clear(request):
     FeedbackIngestRejection.objects.all().delete()
     return redirect("feedback-triage")

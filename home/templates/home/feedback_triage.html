@@ -62,6 +62,7 @@
                   <th>Save</th>
                   <th>Status</th>
                   <th>Issue</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,6 +85,13 @@
                     <td>{% if report.has_save_snapshot %}yes{% else %}no{% endif %}</td>
                     <td>{{ report.get_review_status_display }}</td>
                     <td>{% if report.matched_issue %}{{ report.matched_issue.title }}{% else %}Unlinked{% endif %}</td>
+                    <td>
+                      <form method="post" action="{% url 'feedback-report-delete' report.receipt_id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                        <button type="submit" class="staff-danger-button" onclick="return confirm('Delete this feedback report? This cannot be undone.');">Delete</button>
+                      </form>
+                    </td>
                   </tr>
                 {% endfor %}
               </tbody>

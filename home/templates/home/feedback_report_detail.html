@@ -10,7 +10,13 @@
         <h1>Feedback Report</h1>
         <p class="staff-panel-copy">{{ report.feedback_id }}</p>
       </div>
-      <a href="{% url 'feedback-triage' %}" class="staff-return">Back to triage</a>
+      <div class="staff-heading-actions">
+        <form method="post" action="{% url 'feedback-report-delete' report.receipt_id %}">
+          {% csrf_token %}
+          <button type="submit" class="staff-danger-button" onclick="return confirm('Delete this feedback report? This cannot be undone.');">Delete report</button>
+        </form>
+        <a href="{% url 'feedback-triage' %}" class="staff-return">Back to triage</a>
+      </div>
     </div>
 
     <div class="report-detail-grid">

@@ -340,6 +340,33 @@ class FeedbackTriageUiTests(TestCase):
         self.report.refresh_from_db()
         self.assertTrue(self.report.is_starred)
 
+    def test_staff_can_delete_report_from_triage(self):
+        self.client.force_login(self.staff_user)
+
+        response = self.client.post(
+            reverse("feedback-report-delete", kwargs={"receipt_id": self.report.receipt_id}),
+            {"next": reverse("feedback-triage")},
+        )
+
+        self.assertRedirects(response, reverse("feedback-triage"))
+        self.assertFalse(FeedbackReport.objects.filter(receipt_id=self.report.receipt_id).exists())
+
+    def test_regular_user_cannot_delete_report(self):
+        self.client.force_login(self.regular_user)
+
+        response = self.client.post(
+            reverse("feedback-report-delete", kwargs={"receipt_id": self.report.receipt_id}),
+        )
+
+        self.assertRedirects(
+            response,
+            (
+                f'{reverse("staff-login")}?next='
+                f'{reverse("feedback-report-delete", kwargs={"receipt_id": self.report.receipt_id})}'
+            ),
+        )
+        self.assertTrue(FeedbackReport.objects.filter(receipt_id=self.report.receipt_id).exists())
+
     def test_staff_can_clear_ingest_rejections(self):
         FeedbackIngestRejection.objects.create(reason_code="unsupported_content_type", request_size=10)
         FeedbackIngestRejection.objects.create(reason_code="message_too_large", request_size=2001)
@@ -387,4 +414,14 @@ class FeedbackTriageUiTests(TestCase):
         self.assertContains(
             response,
             reverse("feedback-save-download", kwargs={"receipt_id": self.report.receipt_id}),
+        )
+
+    def test_triage_inbox_includes_report_delete_action(self):
+        self.client.force_login(self.staff_user)
+
+        response = self.client.get(reverse("feedback-triage"))
+
+        self.assertContains(
+            response,
+            reverse("feedback-report-delete", kwargs={"receipt_id": self.report.receipt_id}),
         )

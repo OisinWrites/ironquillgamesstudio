@@ -541,6 +541,34 @@ main {
   margin-top: 0;
 }
 
+.staff-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.staff-danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(226, 126, 96, 0.5);
+  border-radius: 999px;
+  padding: 0.42rem 0.75rem;
+  color: #f0b29b;
+  background: rgba(113, 38, 28, 0.18);
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.staff-danger-button:hover,
+.staff-danger-button:focus-visible {
+  border-color: rgba(226, 126, 96, 0.8);
+  color: #ffe1d6;
+  background: rgba(113, 38, 28, 0.28);
+}
+
 .form-errors {
   color: #e2a985;
   font-size: 0.9rem;
